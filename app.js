@@ -1,4 +1,13 @@
-var randomPay = Math.floor(Math.random()* 100);
+function makeRand(max, min) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+var randomPay = Math.floor(Math.random() * 100);
+var salesTax = makeRand(.02, .045);
+var taxToCollect = randomPay * .02;
+var promoCode = -10;
+var subTotal = (randomPay + taxToCollect) + promoCode;
+
 
 if(window.PaymentRequest) {
     const creditCardPaymentMethods = {
@@ -13,27 +22,39 @@ if(window.PaymentRequest) {
 
     const supportedPaymentMethods = [creditCardPaymentMethods];
 
-    const paymentDetails = {
-        total: {
-            label: 'Total Cost',
+const paymentDetails = {
+    total: {
+        label: 'What you pay',
+        amount: {
+            currency: 'USD',
+            value: subTotal
+        }
+    },
+    displayItems: [
+        {
+            label: 'Goods Sold',
             amount: {
                 currency: 'USD',
                 value: randomPay
-            },
-            displayItems: [{
-                label: 'Subtotal',
-                amount: {
-                    currency: 'USD',
-                    value: '60'
-                }
-            }],
-            shippingDetails: [{
-                id: 'free',
-                label: 'Worldwide free shipping',
-                amount: {currency: 'USD', value: '0'}
-            }]
+            }
+        },
+      
+        {
+            label: 'Taxes',
+            amount: {
+                currency: 'USD',
+                value: taxToCollect
+            }
+        },
+        {
+            label: 'Promo code',
+            amount: {
+                currency: 'USD',
+                value: promoCode
+            }
         }
-    }
+    ]
+};
 
     const options = {
         requestShipping: true,
